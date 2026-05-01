@@ -1,58 +1,47 @@
-import MinimalUIControls from './modules/component/controls.js'
-import MinimalUIHotbar from './modules/component/hotbar.js'
-import MinimalUILogo from './modules/component/logo.js'
-import MinimalUINavigation from './modules/component/navigation.js'
-import MinimalUIPlayers from './modules/component/players.js'
-import MinimalUISidebar from './modules/component/sidebar.js'
+import MinimalUILogo from './modules/component/logo.js';
+import MinimalUINavigation from './modules/component/navigation.js';
+import MinimalUIHotbar from './modules/component/hotbar.js';
+import MinimalUIPlayers from './modules/component/players.js';
+import MinimalUIControls from './modules/component/controls.js';
+import MinimalUISidebar from './modules/component/sidebar.js';
+import MinimalUIPatch from './modules/component/patch.js';
+import MinimalUITheme from './modules/customization/theme.js';
 
-import MinimalUITheme from './modules/customization/theme.js'
-
-import MinimalUIPatch from "./modules/patch.js";
-
-class MinimalUI {
-    static noColorSettings = false;
-}
-
-// Na v13, usar 'setup' garante que as dependências (como colorsettings) já foram verificadas
-Hooks.once('setup', () => {
-
-    /** Initialize settings for Theme Functionality */
-    if (game.modules.get('colorsettings')?.active) {
-        MinimalUITheme.initSettings();
-        MinimalUITheme.initHooks();
-    } else {
-        MinimalUI.noColorSettings = true;
-    }
-    /** ------------------------- */
-
-    /** Initialize settings for Core Component Functionality */
+Hooks.once('init', () => {
+    // Inicializa as configurações de cada componente usando o novo ID
     MinimalUILogo.initSettings();
     MinimalUINavigation.initSettings();
-    MinimalUIControls.initSettings();
     MinimalUIHotbar.initSettings();
-    MinimalUISidebar.initSettings();
     MinimalUIPlayers.initSettings();
-    /** ------------------------- */
-
-    /** Initialize hooks for Core Component Functionality */
-    MinimalUILogo.initHooks();
-    MinimalUINavigation.initHooks();
-    MinimalUIControls.initHooks();
-    MinimalUIHotbar.initHooks();
-    MinimalUISidebar.initHooks();
-    MinimalUIPlayers.initHooks();
-    /** ------------------------- */
-
-    /** Initialize Foundry UI Patches */
+    MinimalUIControls.initSettings();
+    MinimalUISidebar.initSettings();
     MinimalUIPatch.initSettings();
-    MinimalUIPatch.initHooks();
-    /** ------------------------- */
+    
+    // Verifica se a lib de cores está ativa antes de iniciar o tema
+    if (game.modules.get('lib-color-settings')?.active) {
+        MinimalUITheme.initSettings();
+    }
+});
 
+Hooks.once('setup', () => {
+    // Hooks de configuração inicial
 });
 
 Hooks.once('ready', () => {
-    // Verificação de segurança adicional para o GM
-    if (MinimalUI.noColorSettings && game.user.isGM) {
-        ui.notifications.warn("Minimal UI (v13 Fix): Algumas funções de cores estão desativadas porque o módulo 'lib - colorsettings' não foi encontrado.");
+    // Garante que o patch de compatibilidade rode ao iniciar
+    MinimalUIPatch.initHooks();
+    
+    // Inicializa os hooks visuais de cada componente
+    MinimalUILogo.initHooks();
+    MinimalUINavigation.initHooks();
+    MinimalUIHotbar.initHooks();
+    MinimalUIPlayers.initHooks();
+    MinimalUIControls.initHooks();
+    MinimalUISidebar.initHooks();
+    
+    if (game.modules.get('lib-color-settings')?.active) {
+        MinimalUITheme.initHooks();
     }
+
+    console.log("Minimal UI (v13 Fix) | Sistema carregado com sucesso.");
 });
