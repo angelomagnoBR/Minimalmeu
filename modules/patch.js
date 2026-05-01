@@ -1,3 +1,5 @@
+import {rootStyle} from './util.js';
+
 export default class MinimalUIPatch {
 
     static initSettings() {
@@ -6,10 +8,9 @@ export default class MinimalUIPatch {
 
     static initHooks() {
         
-        // Gerencia a troca de abas na barra lateral
+        // Gerencia a troca de abas na barra lateral para ApplicationV2 (v13)
         Hooks.on('changeSidebarTab', function (app) {
-            // Na v13, Object.values(ui.windows) ainda funciona para janelas v1, 
-            // mas estamos adicionando verificações para garantir que o alvo seja encontrado.
+            // Na v13, buscamos a janela correspondente à aba selecionada
             const target = Object.values(ui.windows).find(a => a.tabName === app.tabName);
             
             // Se a barra estiver colapsada, traz a janela pop-out para frente ou maximiza
@@ -30,13 +31,12 @@ export default class MinimalUIPatch {
         });
 
         Hooks.on('ready', function() {
-            // Patch específico para o Chat Log
-            // Na v13, o seletor JQuery deve ser usado com cautela; usamos o html.find do ui.sidebar se disponível
+            // Patch específico para o Chat Log usando seletores compatíveis com v13
             const sidebarElement = ui.sidebar.element;
             const chatTab = sidebarElement.find('[data-tab="chat"]');
             
             if (chatTab?.length) {
-                // Clique simples para trazer pop-out ao topo se colapsado
+                // Clique simples para trazer pop-out ao topo se a sidebar estiver colapsada
                 chatTab.on('click', () => {
                     if (ui.sidebar._collapsed && ui.chat._popout) {
                         ui.chat._popout.bringToTop();
@@ -44,25 +44,25 @@ export default class MinimalUIPatch {
                 });
                 
                 // Clique direito (contextmenu) para gerenciar o pop-out
-                chatTab.on('contextmenu', () => {
+                chatTab.on('contextmenu', (e) => {
+                    e.preventDefault(); // Impede o menu nativo do navegador
                     if (ui.chat._popout) {
                         ui.chat._popout.bringToTop();
                     }
                 });
             }
 
-            // Patch para maximizar qualquer aba minimizada ao clicar com botão direito nos ícones da barra lateral
-            $("#sidebar-tabs > a").on('contextmenu', (e) => {
+            // Patch para maximizar abas minimizadas via botão direito nos ícones
+            const sidebarIcons = $("#sidebar-tabs > a");
+            
+            sidebarIcons.on('contextmenu', (e) => {
+                e.preventDefault(); // Bloqueia o menu de contexto nativo
                 const tabName = $(e.currentTarget).attr('data-tab');
                 const tab = ui[tabName];
                 if (tab && tab._popout && tab._popout._minimized) {
                     tab._popout.maximize();
                 }
             });
-            
-            // Correção v13: Impede que o menu de contexto nativo do navegador apareça nos ícones da sidebar
-            $("#sidebar-tabs > a").on('contextmenu', (e) => e.preventDefault());
         });
-    }
-
-}
+    } // Fecha initHooks
+} // Fecha a Classe
