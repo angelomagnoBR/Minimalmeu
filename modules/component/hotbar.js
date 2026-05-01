@@ -1,5 +1,5 @@
 import {debouncedReload, rootStyle} from '../util.js';
-import '../../styles/component/hotbar.css';
+
 import MinimalUIPlayers from "./players.js"; // Adicionado .js para consistência
 
 export default class MinimalUIHotbar {
