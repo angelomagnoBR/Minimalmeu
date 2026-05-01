@@ -13,7 +13,8 @@ class MinimalUI {
     static noColorSettings = false;
 }
 
-Hooks.once('init', () => {
+// Na v13, usar 'setup' garante que as dependências (como colorsettings) já foram verificadas
+Hooks.once('setup', () => {
 
     /** Initialize settings for Theme Functionality */
     if (game.modules.get('colorsettings')?.active) {
@@ -50,8 +51,8 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('ready', () => {
-
-    if (MinimalUI.noColorSettings && game.user.isGM)
-        ui.notifications.error("Minimal UI: Disabled color features because 'lib - colorsettings' module is not active.");
-
-})
+    // Verificação de segurança adicional para o GM
+    if (MinimalUI.noColorSettings && game.user.isGM) {
+        ui.notifications.warn("Minimal UI (v13 Fix): Algumas funções de cores estão desativadas porque o módulo 'lib - colorsettings' não foi encontrado.");
+    }
+});
