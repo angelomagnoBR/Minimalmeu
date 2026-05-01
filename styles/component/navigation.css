@@ -1,25 +1,24 @@
 :root {
-    /* Alterado para visible para evitar que a navegação suma antes do JS carregar */
     --navivis: visible;
     --navixpos: 110px;
     --navixmg: 75px;
-    --navilh: 20px;
+    --navilh: 24px; /* Aumentado ligeiramente para v13 */
     --navifs: 14px;
-    --navilisttop: 16px;
-    --navibuttonsize: 23px;
+    --navilisttop: 28px; /* Ajustado para não sobrepor o nome da cena */
+    --navibuttonsize: 26px;
     --navileft: -10px;
     --naviright: 0px;
     --topleft: -200px;
 }
 
 #ui-top.offset {
-    /* Ajuste para evitar que a UI superior "empurre" outros elementos na v13 */
     margin-left: var(--topleft);
-    pointer-events: none; /* Garante que o container transparente não bloqueie cliques */
+    pointer-events: none;
+    z-index: 100; /* Garante que fique acima de outros overlays */
 }
 
 #ui-top.offset > * {
-    pointer-events: all; /* Devolve os cliques para os elementos internos */
+    pointer-events: all;
 }
 
 #navigation {
@@ -30,19 +29,20 @@
     margin: 5px 0 0 0;
     display: flex;
     align-items: flex-start;
+    flex-wrap: nowrap; /* Impede que as cenas pulem para a linha de baixo na v13 */
 }
 
 #navigation:hover {
-    opacity: 100% !important;
+    opacity: 1 !important; /* Corrigido de 100% para 1 (padrão CSS) */
 }
 
 #navigation .nav-item {
     line-height: var(--navilh);
     font-size: var(--navifs);
-    top: 0; /* Resetado para alinhar melhor na v13 */
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--bordercolor);
     box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
+    white-space: nowrap; /* Evita quebra de texto em nomes longos */
 }
 
 #navigation #nav-toggle {
@@ -62,12 +62,15 @@
     margin-right: var(--navixmg);
     display: flex;
     gap: 4px;
+    list-style: none; /* Remove pontos de lista indesejados */
+    padding: 0;
 }
 
 #navigation #scene-list .scene ul.scene-players {
     top: var(--navilisttop);
     background: rgba(0, 0, 0, 0.8);
     border-radius: 4px;
+    padding: 2px 5px;
 }
 
 #navigation #scene-list .scene.view, 
@@ -78,7 +81,6 @@
 }
 
 /** COMPATIBILITY: Monks Scene Navigation */
-
 #navigation .monks-scene-navigation {
     flex: 0 0 auto;
     height: auto;
@@ -94,8 +96,4 @@
     height: var(--navilh);
     font-size: var(--navifs);
     padding: 0 8px;
-}
-
-#navigation .monks-scene-navigation .scene-list > li.nav-item ul.scene-players {
-    top: var(--navilisttop);
 }
