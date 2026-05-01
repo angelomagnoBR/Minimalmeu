@@ -10,64 +10,83 @@
     --hotbarshp: 0px;
 }
 
-#hotbar:hover {
-    bottom: var(--hotbarhv);
-    transition: 0.5s;
-    opacity: 100%;
-}
-
 #hotbar {
     left: var(--hotbarxpos);
     bottom: var(--hotbarypos);
     visibility: var(--hotbarvis);
-    transition: 0.5s ease-out 0.5s;
+    transition: bottom 0.5s ease, opacity 0.5s ease;
     opacity: var(--opacity);
     position: fixed;
+    z-index: 50; /* Mantém abaixo de diálogos, mas acima do canvas */
+}
+
+#hotbar:hover {
+    bottom: var(--hotbarhv) !important;
+    opacity: 100% !important;
 }
 
 #hotbar .bar-controls {
-    background: url(../../ui/denim075.png) repeat;
+    background: rgba(0, 0, 0, 0.5); /* Substituído denim por fundo dinâmico */
     height: var(--hotbarhh);
     margin: var(--hotbarmg) 2px;
     box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
     border: 1px solid var(--bordercolor);
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Estilização para o ícone de cadeado que adicionamos no JS */
+#bar-lock {
+    margin-left: 5px;
+    color: var(--bordercolor);
+    cursor: pointer;
+}
+
+#bar-lock:hover {
+    text-shadow: 0 0 5px var(--shadowcolor);
 }
 
 #hotbar .bar-controls a.page-control {
     font-size: 20px;
+    line-height: var(--hotbarlh1);
 }
 
 #hotbar #hotbar-directory-controls {
     font-size: 14px;
+    display: flex;
+    align-items: center;
 }
 
 #hotbar .bar-controls span.page-number {
     line-height: var(--hotbarlh2);
-}
-
-#hotbar #macro-list:hover {
-    border: 1px solid var(--bordercolor);
-    box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
-    transition: 0.5s;
+    font-weight: bold;
 }
 
 #hotbar #macro-list {
     border: 1px solid var(--bordercolor);
     box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
-    transition: 0.05s ease-out 0.5s;
+    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.3);
 }
 
-#hotbar.locked #macro-list:hover {
-    border: 1px solid var(--shadowcolor);
-    box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--bordercolor);
-    transition: 0.5s;
+#hotbar #macro-list:hover {
+    background: rgba(0, 0, 0, 0.6);
 }
 
+/* Estilo para quando a Hotbar estiver travada via JS */
 #hotbar.locked #macro-list {
-    border: 1px solid var(--shadowcolor);
-    box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--bordercolor);
-    transition: 0.05s ease-out 0.5s;
+    border-color: var(--shadowcolor);
+    box-shadow: 0 0 var(--shadowstrength) 2px var(--bordercolor);
+}
+
+#hotbar .macro {
+    border-right: 1px solid var(--bordercolor);
+}
+
+#hotbar .macro:last-child {
+    border-right: none;
 }
 
 #hotbar .macro:hover {
@@ -82,4 +101,5 @@
     box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
     border: 1px solid var(--bordercolor);
     border-radius: 5px;
+    background: rgba(0, 0, 0, 0.4);
 }
