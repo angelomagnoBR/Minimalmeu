@@ -4,7 +4,7 @@ import '../../styles/component/sidebar.css';
 export default class MinimalUISidebar {
 
     static initSettings() {
-        // MUDE 'minimal-ui' para 'minimal-ui-personal' se você alterou o ID no module.json
+        // Usando o ID 'minimal-ui-personal' conforme definido no seu module.json
         game.settings.register('minimal-ui-personal', 'rightcontrolsBehaviour', {
             name: game.i18n.localize("MinimalUI.SidebarStyleName"),
             hint: game.i18n.localize("MinimalUI.SidebarStyleHint"),
@@ -15,57 +15,45 @@ export default class MinimalUISidebar {
                 "shown": game.i18n.localize("MinimalUI.SettingsStartVisible"),
                 "collapsed": game.i18n.localize("MinimalUI.SettingsCollapsed")
             },
-            default: "shown"
+            default: "shown" // Forçado para 'shown' para evitar que a barra suma ao instalar
         });
     }
 
     static initHooks() {
-        // Na v13, renderSidebar é mais garantido que renderChatLog para manipular a barra toda
-        Hooks.once('renderSidebar', async function (app, html) {
-            const sidebarElem = html.find("#sidebar-tabs"); // Uso do html.find é mais seguro na v13
+        // renderSidebar é disparado quando a barra lateral é desenhada na v13
+        Hooks.on('renderSidebar', (app, html) => {
+            // Na v13, 'html' pode ser um objeto jQuery ou HTMLElement; o método find é seguro aqui
+            const sidebarElem = html.find("#sidebar-tabs"); 
             
-            // Verifica se o elemento existe antes de mexer no CSS
             if (sidebarElem.length) {
                 const currentHeight = sidebarElem.css('--sidebar-tab-height') || "32px";
                 const newHeight = parseInt(currentHeight) / 1.25;
                 sidebarElem.css('--sidebar-tab-height', newHeight + 'px');
             }
 
-            // Pega a configuração (ajuste o ID aqui também)
             const behaviour = game.settings.get('minimal-ui-personal', 'rightcontrolsBehaviour');
 
-            switch (behaviour) {
-                case 'shown': {
-                    rootStyle.setProperty('--fpsvis', 'unset');
-                    rootStyle.setProperty('--controlsvis', 'visible');
-                    break;
-                }
-                case 'collapsed': {
-                    // Na v13, ui.sidebar pode demorar um pouco mais para estar pronto
-                    if (ui.sidebar && !ui.sidebar._collapsed) {
-                        ui.sidebar.collapse();
-                    }
-                    rootStyle.setProperty('--controlsvis', 'visible');
-                    break;
-                }
-                default: {
-                    rootStyle.setProperty('--fpsvis', 'unset');
-                    rootStyle.setProperty('--controlsvis', 'visible');
-                    break;
+            if (behaviour === 'collapsed') {
+                // Executa o colapso apenas se a barra já não estiver colapsada
+                if (ui.sidebar && !ui.sidebar._collapsed) {
+                    ui.sidebar.collapse();
                 }
             }
+            
+            // Garante que os controles fiquem visíveis mesmo se houver delay na renderização
+            rootStyle.setProperty('--controlsvis', 'visible');
+            rootStyle.setProperty('--fpsvis', 'unset');
         });
 
         Hooks.on('collapseSidebar', function(sidebar, isCollapsing) {
-            // A v13 mudou a largura padrão da sidebar em alguns sistemas, 
-            // 300px pode precisar de ajuste dependendo do seu CSS
+            // Ajuste dinâmico de posição para evitar que elementos fiquem sobrepostos na v13
             if (isCollapsing) {
                 rootStyle.setProperty('--fpsposx', '-5px');
-                rootStyle.setProperty('--fpsvis', 'unset');
             } else {
+                // 300px é a largura padrão, mas pode variar conforme o sistema
                 rootStyle.setProperty('--fpsposx', '300px');
-                rootStyle.setProperty('--fpsvis', 'unset');
             }
+            rootStyle.setProperty('--fpsvis', 'unset');
         });
     }
 }
