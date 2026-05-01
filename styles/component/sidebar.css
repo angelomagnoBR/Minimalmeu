@@ -1,15 +1,22 @@
 :root {
-    --controlsvis: hidden;
+    /* Mudamos para visible por padrão para evitar que ela suma no carregamento */
+    --controlsvis: visible;
     --fpsvis: hidden;
+    --fpsposx: 300px;
 }
 
 #sidebar {
-    visibility: var(--controlsvis);
+    /* Removido o visibility: hidden fixo */
+    transition: transform 0.5s ease;
+    z-index: 100;
 }
 
+/* Na v13, em vez de visibility, usamos opacidade ou largura para o efeito Minimal */
 #sidebar.collapsed {
     transition: 0.5s;
     opacity: var(--opacity);
+    /* Garante que o botão de expansão (setinha) continue visível */
+    visibility: visible !important; 
 }
 
 #sidebar.collapsed:hover {
@@ -20,6 +27,9 @@
 #sidebar-tabs {
     border-bottom: 1px solid var(--bordercolor);
     box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
+    /* Ajuste para ícones menores na v13 */
+    display: flex;
+    justify-content: space-evenly;
 }
 
 #sidebar-tabs > .item.active {
@@ -39,8 +49,14 @@
     text-shadow: 0 0 var(--shadowstrength) var(--bordercolor);
 }
 
+/* Ajuste do medidor de FPS para não sumir atrás da barra */
 #fps {
     position: absolute;
     right: var(--fpsposx);
+    bottom: 5px;
     visibility: var(--fpsvis);
+    z-index: 101;
+    background: rgba(0,0,0,0.5);
+    padding: 2px 5px;
+    border-radius: 4px;
 }
