@@ -7,20 +7,26 @@ export default class MinimalUINavigation {
     static cssSceneNavLogoStart = 110;
 
     static async collapseNavigation() {
-        await ui.nav.collapse();
+        // Na v13, ui.nav.collapse() retorna uma Promise, garantindo que o estado mude antes de prosseguir
+        if (ui.nav) await ui.nav.collapse();
     }
 
     static positionNav() {
-        let navixpos = game.settings.get('minimal-ui', 'foundryLogoSize') === 'hidden' ? MinimalUINavigation.cssSceneNavNoLogoStart : MinimalUINavigation.cssSceneNavLogoStart;
-        if (game.webrtc.mode > 0 && !ui.webrtc.element.hasClass('hidden'))
-            if (game.webrtc.settings.client.dockPosition === 'left')
-                navixpos += ui.webrtc.position.width;
+        // Usa o novo ID para ler se o logo está escondido e calcular a posição X
+        let navixpos = game.settings.get('minimal-ui-personal', 'foundryLogoSize') === 'hidden' ? MinimalUINavigation.cssSceneNavNoLogoStart : MinimalUINavigation.cssSceneNavLogoStart;
+        
+        // Ajuste para WebRTC (Câmeras) na v13
+        if (game.webrtc.mode > 0 && !ui.webrtc.element.hasClass('hidden')) {
+            if (game.webrtc.settings.client.dockPosition === 'left') {
+                navixpos += ui.webrtc.position.width || 0;
+            }
+        }
         rootStyle.setProperty('--navixpos', navixpos + 'px');
     }
 
     static initSettings() {
 
-        game.settings.register('minimal-ui', 'sceneNavigation', {
+        game.settings.register('minimal-ui-personal', 'sceneNavigation', {
             name: game.i18n.localize("MinimalUI.NavigationStyleName"),
             hint: game.i18n.localize("MinimalUI.NavigationStyleHint"),
             scope: 'world',
@@ -35,7 +41,7 @@ export default class MinimalUINavigation {
             onChange: MinimalUINavigation.positionNav
         });
 
-        game.settings.register('minimal-ui', 'sceneNavigationSize', {
+        game.settings.register('minimal-ui-personal', 'sceneNavigationSize', {
             name: game.i18n.localize("MinimalUI.NavigationSizeName"),
             hint: game.i18n.localize("MinimalUI.NavigationSizeHint"),
             scope: 'world',
@@ -50,9 +56,11 @@ export default class MinimalUINavigation {
             onChange: debouncedReload
         });
 
-        if (game.system.id === 'sfrpg')
+        // Corrigido: Adicionado chaves para que o ajuste de margem seja exclusivo do Starfinder
+        if (game.system.id === 'sfrpg') {
             rootStyle.setProperty('--navileft', '-1px');
             rootStyle.setProperty('--naviright', '5px');
+        }
 
     }
 
@@ -60,7 +68,9 @@ export default class MinimalUINavigation {
 
         Hooks.once('renderSceneNavigation', async function () {
 
-            switch (game.settings.get('minimal-ui', 'foundryLogoSize')) {
+            // Sincroniza margens com o tamanho do logo definido no novo ID
+            const logoSize = game.settings.get('minimal-ui-personal', 'foundryLogoSize');
+            switch (logoSize) {
                 case 'small': {
                     rootStyle.setProperty('--navixmg', '25px');
                     break;
@@ -71,7 +81,8 @@ export default class MinimalUINavigation {
                 }
             }
 
-            switch (game.settings.get('minimal-ui', 'sceneNavigation')) {
+            const navStyle = game.settings.get('minimal-ui-personal', 'sceneNavigation');
+            switch (navStyle) {
                 case 'collapsed': {
                     MinimalUINavigation.collapseNavigation();
                     rootStyle.setProperty('--navivis', 'visible');
@@ -81,9 +92,14 @@ export default class MinimalUINavigation {
                     rootStyle.setProperty('--navivis', 'visible');
                     break;
                 }
+                case 'hidden': {
+                    rootStyle.setProperty('--navivis', 'hidden');
+                    break;
+                }
             }
 
-            switch (game.settings.get('minimal-ui', 'sceneNavigationSize')) {
+            const navSize = game.settings.get('minimal-ui-personal', 'sceneNavigationSize');
+            switch (navSize) {
                 case 'standard': {
                     rootStyle.setProperty('--navilh', '32px');
                     rootStyle.setProperty('--navifs', '16px');
@@ -102,7 +118,8 @@ export default class MinimalUINavigation {
 
         });
 
-        Hooks.on('renderSceneNavigation', async function () {
+        // Atualiza posição sempre que a navegação for renderizada (ex: trocar de cena)
+        Hooks.on('renderSceneNavigation', function () {
             MinimalUINavigation.positionNav();
         });
 
