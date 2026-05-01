@@ -1,3 +1,4 @@
+// minimalui.js (Arquivo Raiz)
 import MinimalUILogo from './modules/component/logo.js';
 import MinimalUINavigation from './modules/component/navigation.js';
 import MinimalUIHotbar from './modules/component/hotbar.js';
@@ -8,40 +9,38 @@ import MinimalUIPatch from './modules/component/patch.js';
 import MinimalUITheme from './modules/customization/theme.js';
 
 Hooks.once('init', () => {
-    // Inicializa as configurações de cada componente usando o novo ID
-    MinimalUILogo.initSettings();
-    MinimalUINavigation.initSettings();
-    MinimalUIHotbar.initSettings();
-    MinimalUIPlayers.initSettings();
-    MinimalUIControls.initSettings();
-    MinimalUISidebar.initSettings();
-    MinimalUIPatch.initSettings();
-    
-    // Verifica se a lib de cores está ativa antes de iniciar o tema
-    if (game.modules.get('lib-color-settings')?.active) {
-        MinimalUITheme.initSettings();
+    // Registra as configurações usando o novo ID 'minimal-ui-personal'
+    try {
+        MinimalUILogo.initSettings();
+        MinimalUINavigation.initSettings();
+        MinimalUIHotbar.initSettings();
+        MinimalUIPlayers.initSettings();
+        MinimalUIControls.initSettings();
+        MinimalUISidebar.initSettings();
+        MinimalUIPatch.initSettings();
+
+        // Só tenta o tema se a biblioteca existir
+        if (game.modules.get('lib-color-settings')?.active) {
+            MinimalUITheme.initSettings();
+        }
+    } catch (err) {
+        console.error("Minimal UI | Erro fatal no registro de configurações:", err);
     }
 });
 
-Hooks.once('setup', () => {
-    // Hooks de configuração inicial
-});
-
 Hooks.once('ready', () => {
-    // Garante que o patch de compatibilidade rode ao iniciar
-    MinimalUIPatch.initHooks();
-    
-    // Inicializa os hooks visuais de cada componente
+    // Ativa os hooks visuais
     MinimalUILogo.initHooks();
     MinimalUINavigation.initHooks();
     MinimalUIHotbar.initHooks();
     MinimalUIPlayers.initHooks();
     MinimalUIControls.initHooks();
     MinimalUISidebar.initHooks();
-    
+    MinimalUIPatch.initHooks();
+
     if (game.modules.get('lib-color-settings')?.active) {
         MinimalUITheme.initHooks();
     }
-
-    console.log("Minimal UI (v13 Fix) | Sistema carregado com sucesso.");
+    
+    console.log("Minimal UI (v13 Fix) | Carregado com sucesso.");
 });
