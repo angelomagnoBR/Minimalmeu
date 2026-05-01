@@ -1,5 +1,5 @@
 import {debouncedReload, rootStyle} from '../util.js';
-import '../../styles/component/logo.css';
+
 
 export default class MinimalUILogo {
 
