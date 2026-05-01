@@ -19,20 +19,26 @@
 	"relationships": {
 		"requires": [
 			{
-				"id": "colorsettings",
+				"id": "lib-wrapper",
+				"type": "module"
+			},
+			{
+				"id": "lib-color-settings",
 				"type": "module"
 			}
 		]
 	},
-	"esmodules": [ "minimalui.js" ],
-"styles": [
-    "styles/component/sidebar.css",
-    "styles/component/controls.css",
-    "styles/component/hotbar.css",
-    "styles/component/logo.css",
-    "styles/component/navigation.css",
-    "styles/component/players.css",
-    "styles/customization/theme.css"
+	"esmodules": [
+		"minimalui.js"
+	],
+	"styles": [
+		"styles/component/sidebar.css",
+		"styles/component/controls.css",
+		"styles/component/hotbar.css",
+		"styles/component/logo.css",
+		"styles/component/navigation.css",
+		"styles/component/players.css",
+		"styles/customization/theme.css"
 	],
 	"languages": [
 		{
