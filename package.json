@@ -1,7 +1,7 @@
 {
-  "name": "foundryvtt-minimal-ui",
-  "version": "1.7.0",
-  "description": "Minimal UI allows customizing Foundry interface, by hiding, collapsing or resizing specific parts.",
+  "name": "minimal-ui-personal",
+  "version": "1.7.0-v13",
+  "description": "Minimal UI personalizado para Foundry v13.",
   "main": "minimalui.js",
   "scripts": {
     "copy": "cp ./module.json dist/ && cp ./THANKS.txt dist/ && cp ./CHANGELOG.md dist/ && cp ./LICENSE.md dist/ && cp ./README.md dist/ && cp -r ./lang dist/",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/saif-ellafi/foundryvtt-minimal-ui.git"
+    "url": "git+https://github.com/angelomagnoBR/Minimalmeu.git"
   },
   "keywords": [
     "foundry",
@@ -22,12 +22,12 @@
     "ui",
     "minimal"
   ],
-  "author": "JeansenVaars (Saif Ellafi)",
+  "author": "angelomagnoBR (Original por JeansenVaars)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/saif-ellafi/foundryvtt-minimal-ui/issues"
+    "url": "https://github.com/angelomagnoBR/Minimalmeu/issues"
   },
-  "homepage": "https://github.com/saif-ellafi/foundryvtt-minimal-ui#readme",
+  "homepage": "https://github.com/angelomagnoBR/Minimalmeu#readme",
   "dependencies": {
     "@rollup/plugin-json": "^4.1.0",
     "rollup": "^2.45.2",
