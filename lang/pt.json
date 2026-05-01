@@ -1,0 +1,12 @@
+{
+  "MINIMALUI.NavigationSettings": "Visibilidade da Navegação",
+  "MINIMALUI.NavigationSettingsHint": "Escolha como a barra de navegação de cenas deve se comportar.",
+  "MINIMALUI.SettingsAlwaysVisible": "Sempre Visível",
+  "MINIMALUI.SettingsVisibleHover": "Visível ao Passar o Mouse",
+  "MINIMALUI.SettingsCollapsed": "Iniciar Recolhida",
+  "MINIMALUI.SettingsHidden": "Esconder Completamente",
+  "MINIMALUI.FoundryLogoSettings": "Visibilidade do Logo",
+  "MINIMALUI.HotbarSettings": "Barra de Macros (Hotbar)",
+  "MINIMALUI.HotbarPosition": "Posição da Hotbar",
+  "MINIMALUI.SettingsExtremeLeft": "Extremo Esquerda"
+}
