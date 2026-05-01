@@ -1,7 +1,7 @@
 {
-	"id": "minimal-ui",
-	"title": "Minimal UI",
-	"author": "JeansenVaars#2857",
+	"id": "minimal-ui-personal",
+	"title": "Minimal UI (v13 Fix)",
+	"author": "JeansenVaars#2857 / Mod: angelomagnoBR",
 	"authors": [
 		{
 			"name": "Saif Addin Ellafi",
@@ -9,14 +9,13 @@
 			"ko-fi": "https://ko-fi.com/jeansenvaars"
 		}
 	],
-	"description": "Minimal UI allows customizing Foundry interface, by hiding, collapsing or resizing specific parts.",
-	"version": "1.7.0",
+	"description": "Versão personalizada para compatibilidade com v13.",
+	"version": "1.7.0-v13",
 	"compatibility": {
-		"minimum": "10",
+		"minimum": "11",
 		"verified": "13",
 		"maximum": "13"
 	},
-	"minimumCoreVersion": "10",
 	"relationships": {
 		"requires": [{
 			"id": "colorsettings",
@@ -47,10 +46,7 @@
 			"path": "lang/ja.json"
 		}
 	],
-	"url": "https://github.com/saif-ellafi/foundryvtt-minimal-ui.git",
-	"manifest": "https://github.com/saif-ellafi/foundryvtt-minimal-ui/releases/latest/download/module.json",
-	"download": "https://github.com/saif-ellafi/foundryvtt-minimal-ui/releases/download/1.7.0/foundryvtt-minimal-ui_1.7.0.zip",
-	"readme": "https://github.com/saif-ellafi/foundryvtt-minimal-ui/blob/main/README.md",
-	"license": "https://github.com/saif-ellafi/foundryvtt-minimal-ui/blob/main/LICENSE.md",
-	"changelog": "https://github.com/saif-ellafi/foundryvtt-minimal-ui/blob/main/CHANGELOG.md"
+	"url": "https://github.com/angelomagnoBR/Minimalmeu",
+	"manifest": "https://raw.githubusercontent.com/angelomagnoBR/Minimalmeu/main/module.json",
+	"download": "https://github.com/angelomagnoBR/Minimalmeu/archive/refs/heads/main.zip"
 }
