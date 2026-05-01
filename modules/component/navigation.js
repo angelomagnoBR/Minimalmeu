@@ -24,23 +24,28 @@ export default class MinimalUINavigation {
         Hooks.on('renderSceneNavigation', (app, html) => {
             const navSettings = game.settings.get('minimal-ui-personal', 'navigation');
 
-            // PROTEÇÃO TOTAL: Se ui.webrtc não existir ou não for JQuery, o código não quebra
+            // Versão simplificada e ultra-segura para v13
             let hasWebRtc = false;
-            try {
-                const webrtc = ui.webrtc;
-                if (webrtc && webrtc.element && typeof webrtc.element.hasClass === 'function') {
-                    hasWebRtc = webrtc.element.hasClass('active');
-                } else if (webrtc && webrtc.element && webrtc.element[0]) {
-                    hasWebRtc = webrtc.element[0].classList.contains('active');
+            const webrtc = ui.webrtc;
+            
+            if (webrtc?.element) {
+                // Tenta pegar o elemento puro do JavaScript, independente de ser JQuery ou não
+                const el = webrtc.element[0] || webrtc.element;
+                if (el && el.classList) {
+                    hasWebRtc = el.classList.contains('active');
                 }
-            } catch (e) {
-                console.warn("Minimal UI | Falha ao detectar WebRTC, ignorando...");
             }
 
             if (navSettings === 'hidden') {
                 html.hide();
             } else if (navSettings === 'collapsed') {
-                if (app._collapsed) html.addClass('minimal-ui-collapsed');
+                if (app._collapsed) {
+                    if (typeof html.addClass === 'function') {
+                        html.addClass('minimal-ui-collapsed');
+                    } else {
+                        html.classList?.add('minimal-ui-collapsed');
+                    }
+                }
             }
             
             rootStyle.setProperty('--nav-v13-patch', hasWebRtc ? '1' : '0');
