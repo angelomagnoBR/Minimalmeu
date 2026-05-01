@@ -1,7 +1,18 @@
 :root {
-    --logovis: hidden;
+    /* Alterado para visible para garantir que o logo carregue corretamente na v13 */
+    --logovis: visible;
 }
 
 #logo {
     visibility: var(--logovis);
+    /* Ajuste de cursor para indicar que o logo é o botão de 'Toggle UI' que corrigimos */
+    cursor: pointer;
+    transition: opacity 0.5s ease;
+    z-index: 100;
+}
+
+/* Efeito visual ao passar o mouse, condizente com a função de botão */
+#logo:hover {
+    filter: drop-shadow(0 0 5px var(--shadowcolor));
+    opacity: 0.8;
 }
