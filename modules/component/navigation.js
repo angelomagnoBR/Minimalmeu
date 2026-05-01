@@ -23,11 +23,19 @@ export default class MinimalUINavigation {
     static initHooks() {
         Hooks.on('renderSceneNavigation', (app, html) => {
             const navSettings = game.settings.get('minimal-ui-personal', 'navigation');
-            
-            // Corrige o erro da imagem: Verifica se o elemento existe antes de tentar ler classes
-            // No v13, usamos standard JS ou garantimos que o elemento seja JQuery
-            const webrtcElement = ui.webrtc?.element;
-            const hasWebRtc = webrtcElement && webrtcElement.length > 0 && webrtcElement[0].classList.contains('active');
+
+            // PROTEÇÃO TOTAL: Se ui.webrtc não existir ou não for JQuery, o código não quebra
+            let hasWebRtc = false;
+            try {
+                const webrtc = ui.webrtc;
+                if (webrtc && webrtc.element && typeof webrtc.element.hasClass === 'function') {
+                    hasWebRtc = webrtc.element.hasClass('active');
+                } else if (webrtc && webrtc.element && webrtc.element[0]) {
+                    hasWebRtc = webrtc.element[0].classList.contains('active');
+                }
+            } catch (e) {
+                console.warn("Minimal UI | Falha ao detectar WebRTC, ignorando...");
+            }
 
             if (navSettings === 'hidden') {
                 html.hide();
