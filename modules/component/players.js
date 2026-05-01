@@ -1,5 +1,4 @@
 import {debouncedReload, rootStyle} from '../util.js';
-import '../../styles/component/players.css';
 
 export default class MinimalUIPlayers {
 
