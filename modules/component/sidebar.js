@@ -4,8 +4,8 @@ import '../../styles/component/sidebar.css';
 export default class MinimalUISidebar {
 
     static initSettings() {
-
-        game.settings.register('minimal-ui', 'rightcontrolsBehaviour', {
+        // MUDE 'minimal-ui' para 'minimal-ui-personal' se você alterou o ID no module.json
+        game.settings.register('minimal-ui-personal', 'rightcontrolsBehaviour', {
             name: game.i18n.localize("MinimalUI.SidebarStyleName"),
             hint: game.i18n.localize("MinimalUI.SidebarStyleHint"),
             scope: 'world',
@@ -20,23 +20,32 @@ export default class MinimalUISidebar {
     }
 
     static initHooks() {
-        Hooks.once('renderChatLog', async function () {
-            const sidebarElem = $("#sidebar-tabs");
-            const newHeight = parseInt(sidebarElem.css('--sidebar-tab-height')) / 1.25;
-            sidebarElem.css('--sidebar-tab-height', newHeight + 'px');
-            switch (game.settings.get('minimal-ui', 'rightcontrolsBehaviour')) {
+        // Na v13, renderSidebar é mais garantido que renderChatLog para manipular a barra toda
+        Hooks.once('renderSidebar', async function (app, html) {
+            const sidebarElem = html.find("#sidebar-tabs"); // Uso do html.find é mais seguro na v13
+            
+            // Verifica se o elemento existe antes de mexer no CSS
+            if (sidebarElem.length) {
+                const currentHeight = sidebarElem.css('--sidebar-tab-height') || "32px";
+                const newHeight = parseInt(currentHeight) / 1.25;
+                sidebarElem.css('--sidebar-tab-height', newHeight + 'px');
+            }
+
+            // Pega a configuração (ajuste o ID aqui também)
+            const behaviour = game.settings.get('minimal-ui-personal', 'rightcontrolsBehaviour');
+
+            switch (behaviour) {
                 case 'shown': {
                     rootStyle.setProperty('--fpsvis', 'unset');
                     rootStyle.setProperty('--controlsvis', 'visible');
                     break;
                 }
                 case 'collapsed': {
-                    ui.sidebar.element.hide();
-                    ui.sidebar.collapse();
-                    // wait for animation to finish
-                    await new Promise(waitABit => setTimeout(waitABit, 600));
+                    // Na v13, ui.sidebar pode demorar um pouco mais para estar pronto
+                    if (ui.sidebar && !ui.sidebar._collapsed) {
+                        ui.sidebar.collapse();
+                    }
                     rootStyle.setProperty('--controlsvis', 'visible');
-                    ui.sidebar.element.fadeIn('slow');
                     break;
                 }
                 default: {
@@ -46,7 +55,10 @@ export default class MinimalUISidebar {
                 }
             }
         });
-        Hooks.on('collapseSidebar', function(_, isCollapsing) {
+
+        Hooks.on('collapseSidebar', function(sidebar, isCollapsing) {
+            // A v13 mudou a largura padrão da sidebar em alguns sistemas, 
+            // 300px pode precisar de ajuste dependendo do seu CSS
             if (isCollapsing) {
                 rootStyle.setProperty('--fpsposx', '-5px');
                 rootStyle.setProperty('--fpsvis', 'unset');
