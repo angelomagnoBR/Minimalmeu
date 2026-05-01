@@ -1,5 +1,5 @@
 import {rootStyle} from '../util.js';
-import '../../styles/customization/theme.css';
+
 
 export default class MinimalUITheme {
 
