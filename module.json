@@ -12,18 +12,27 @@
 	"description": "Versão personalizada para compatibilidade com v13.",
 	"version": "1.7.0-v13",
 	"compatibility": {
-		"minimum": "11",
+		"minimum": "12",
 		"verified": "13",
 		"maximum": "13"
 	},
 	"relationships": {
-		"requires": [{
-			"id": "colorsettings",
-			"type": "module"
-		}]
+		"requires": [
+			{
+				"id": "colorsettings",
+				"type": "module"
+			}
+		]
 	},
 	"esmodules": [ "minimalui.js" ],
-	"styles": [ "minimalui.css" ],
+	"styles": [
+		"styles/component/controls.css",
+		"styles/component/hotbar.css",
+		"styles/component/logo.css",
+		"styles/component/navigation.css",
+		"styles/component/players.css",
+		"styles/component/sidebar.css"
+	],
 	"languages": [
 		{
 			"lang": "en",
