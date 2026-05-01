@@ -1,5 +1,5 @@
 import {rootStyle} from '../util.js';
-import '../../styles/component/sidebar.css';
+
 
 export default class MinimalUISidebar {
 
