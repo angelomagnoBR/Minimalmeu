@@ -1,67 +1,93 @@
 :root {
+    /* Valores padrão para garantir visibilidade no carregamento */
     --controlsw: 36px;
-    --controlsh: 30px;
-    --controlslh: 30px;
+    --controlsh: 36px;
+    --controlslh: 36px;
     --controlsfs: 24px;
     --controlstop: 75px;
-    --opacitycontrols: 75%;
+    --opacitycontrols: 100%; /* Iniciamos em 100 para evitar sumiço na v13 */
     --controlssubop: 100%;
     --controlssubopna: 100%;
     --controlssubdisna: block;
 }
 
 #ui-left {
-    left: -5px;
+    /* Pequeno ajuste para a v13 não cortar o brilho da borda (shadow) */
+    left: 2px;
+    z-index: 50;
 }
 
 #controls {
     opacity: var(--opacitycontrols);
-    transition: 2s;
+    transition: opacity 0.5s ease;
     margin-top: var(--controlstop);
+    pointer-events: none; /* Garante que áreas vazias não bloqueiem o mapa */
+}
+
+#controls > ol {
+    pointer-events: all; /* Devolve o clique para os botões */
 }
 
 #controls:hover {
-    opacity: 100%;
-    transition: 0.5s;
+    opacity: 100% !important;
 }
 
 #controls ol.main-controls {
     overflow: visible;
     margin-top: calc(var(--shadowstrength) + 1px);
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Espaçamento moderno entre ferramentas */
 }
 
-#controls > ol.main-controls > li.scene-control, #controls > ol.sub-controls > li {
+#controls > ol.main-controls > li.scene-control, 
+#controls > ol.sub-controls > li {
     width: var(--controlsw);
     height: var(--controlsh);
     line-height: var(--controlslh);
     font-size: var(--controlsfs);
     border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
 }
 
-#controls ol .scene-control:not(.active), #controls ol .control-tool:not(.active) {
-    transition: 2s;
+/* Ferramentas Ativas: Aplica as cores do seu Theme */
+#controls ol.main-controls > li.scene-control.active,
+#controls ol.sub-controls > li.control-tool.active {
+    border: 1px solid var(--bordercolor);
+    box-shadow: 0 0 var(--shadowstrength) 2px var(--shadowcolor);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#controls ol .scene-control:not(.active), 
+#controls ol .control-tool:not(.active) {
+    transition: opacity 0.5s ease;
     opacity: var(--controlssubopna);
     display: var(--controlssubdisna);
 }
 
-#controls:hover ol .scene-control:not(.active), #controls:hover ol .control-tool:not(.active) {
-    transition: 0.5s;
-    opacity: 100%;
+#controls:hover ol .scene-control:not(.active), 
+#controls:hover ol .control-tool:not(.active) {
+    opacity: 100% !important;
 }
 
-#controls ol.control-tools > li.active, #controls ol.control-tools > li:hover {
-    border: 1px solid var(--bordercolor);
-    box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
-}
-
+/* Sub-controles (ferramentas secundárias) */
 #controls ol.sub-controls.active {
     opacity: var(--controlssubop);
-    margin-top: calc(var(--shadowstrength) + 1px);
-    transition: 2s;
+    margin-top: 0; 
+    margin-left: 8px; /* Afastamento lateral na v13 */
+    transition: opacity 0.5s ease;
 }
 
 #controls:hover ol.sub-controls.active {
-    transition: 0.5s;
-    margin-top: calc(var(--shadowstrength) + 1px);
-    opacity: 100%;
+    opacity: 100% !important;
+}
+
+/* Compatibilidade com módulos que adicionam ícones extras */
+#controls .control-tool i {
+    text-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
 }
