@@ -60,13 +60,12 @@
       "lang": "ja",
       "name": "日本語",
       "path": "lang/ja.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
     }
-{
-  "lang": "pt-BR",
-  "name": "Português (Brasil)",
-  "path": "lang/pt-BR.json"
-}
-    
   ],
   "url": "https://github.com/angelomagnoBR/Minimalmeu",
   "manifest": "https://raw.githubusercontent.com/angelomagnoBR/Minimalmeu/main/module.json",
