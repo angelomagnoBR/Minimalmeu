@@ -1,68 +1,68 @@
 {
-	"id": "minimal-ui-personal",
-	"title": "Minimal UI (v13 Fix)",
-	"author": "JeansenVaars#2857 / Mod: angelomagnoBR",
-	"authors": [
-		{
-			"name": "Saif Addin Ellafi",
-			"discord": "JeansenVaars#2857",
-			"ko-fi": "https://ko-fi.com/jeansenvaars"
-		}
-	],
-	"description": "Versão personalizada para compatibilidade com v13.",
-	"version": "1.7.0-v13",
-	"compatibility": {
-		"minimum": "12",
-		"verified": "13",
-		"maximum": "13"
-	},
-	"relationships": {
-		"requires": [
-			{
-				"id": "lib-wrapper",
-				"type": "module"
-			},
-			{
-				"id": "lib-color-settings",
-				"type": "module"
-			}
-		]
-	},
-	"esmodules": [
-		"minimalui.js"
-	],
-	"styles": [
-		"styles/component/sidebar.css",
-		"styles/component/controls.css",
-		"styles/component/hotbar.css",
-		"styles/component/logo.css",
-		"styles/component/navigation.css",
-		"styles/component/players.css",
-		"styles/customization/theme.css"
-	],
-	"languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json"
-		},
-		{
-			"lang": "es",
-			"name": "Español",
-			"path": "lang/es.json"
-		},
-		{
-			"lang": "de",
-			"name": "Deutsch",
-			"path": "lang/de.json"
-		},
-		{
-			"lang": "ja",
-			"name": "日本語",
-			"path": "lang/ja.json"
-		}
-	],
-	"url": "https://github.com/angelomagnoBR/Minimalmeu",
-	"manifest": "https://raw.githubusercontent.com/angelomagnoBR/Minimalmeu/main/module.json",
-	"download": "https://github.com/angelomagnoBR/Minimalmeu/archive/refs/heads/main.zip"
+  "id": "minimal-ui-personal",
+  "title": "Minimal UI (v13 Fix)",
+  "description": "Versão personalizada para compatibilidade com v13.",
+  "version": "1.7.0-v13",
+  "author": "JeansenVaars#2857 / Mod: angelomagnoBR",
+  "authors": [
+    {
+      "name": "Angelo Magno",
+      "discord": "Angelo Magno",
+      "ko-fi": "https://ko-fi.com/jeansenvaars"
+    }
+  ],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "relationships": {
+    "requires": [
+      {
+        "id": "lib-wrapper",
+        "type": "module"
+      },
+      {
+        "id": "lib-color-settings",
+        "type": "module"
+      }
+    ]
+  },
+  "esmodules": [
+    "minimalui.js"
+  ],
+  "styles": [
+    "styles/component/sidebar.css",
+    "styles/component/controls.css",
+    "styles/component/hotbar.css",
+    "styles/component/logo.css",
+    "styles/component/navigation.css",
+    "styles/component/players.css",
+    "styles/customization/theme.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    },
+    {
+      "lang": "ja",
+      "name": "日本語",
+      "path": "lang/ja.json"
+    }
+  ],
+  "url": "https://github.com/angelomagnoBR/Minimalmeu",
+  "manifest": "https://raw.githubusercontent.com/angelomagnoBR/Minimalmeu/main/module.json",
+  "download": "https://github.com/angelomagnoBR/Minimalmeu/archive/refs/heads/main.zip"
 }
