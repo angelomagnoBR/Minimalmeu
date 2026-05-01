@@ -1,6 +1,6 @@
 import {debouncedReload, rootStyle} from '../util.js';
 import '../../styles/component/hotbar.css';
-import MinimalUIPlayers from "./players";
+import MinimalUIPlayers from "./players.js"; // Adicionado .js para consistência
 
 export default class MinimalUIHotbar {
 
@@ -26,59 +26,62 @@ export default class MinimalUIHotbar {
         `
 
     static lockHotbar(unlock) {
+        // Ignora se módulos de expansão estiverem ativos ou vídeo no rodapé
         if ((game.modules.get("custom-hotbar")?.active) || (game.modules.get('monks-hotbar-expansion')?.active) || (game.webrtc.mode > 0 && game.webrtc.settings.client.dockPosition === 'bottom'))
             return;
+        
         const barLock = $("#bar-lock > i");
         if (MinimalUIHotbar.hotbarLocked && unlock) {
             rootStyle.setProperty('--hotbarypos', MinimalUIHotbar.cssHotbarHidden);
-            barLock.removeClass("fa-lock");
-            barLock.addClass("fa-lock-open");
+            barLock.removeClass("fa-lock").addClass("fa-lock-open");
             MinimalUIHotbar.hotbarLocked = false;
-        } else if (game.settings.get('minimal-ui', 'hotbar') === 'autohide') {
+        } else if (game.settings.get('minimal-ui-personal', 'hotbar') === 'autohide') {
             rootStyle.setProperty('--hotbarypos', MinimalUIHotbar.cssHotbarAutoHideHeight);
-            barLock.removeClass("fa-lock-open");
-            barLock.addClass("fa-lock");
+            barLock.removeClass("fa-lock-open").addClass("fa-lock");
             MinimalUIHotbar.hotbarLocked = true;
         }
     }
 
     static positionHotbar() {
         let availableWidth = canvas.app?.screen.width;
-        if (!availableWidth)
-            return;
+        if (!availableWidth) return;
+        
         let webrtcAdjust = 0;
         let webrtcVAdjust = 0;
 
         if (game.webrtc.mode > 0 && !ui.webrtc.element.hasClass('hidden')) {
             if (game.webrtc.settings.client.dockPosition === 'left')
-                webrtcAdjust = (ui.webrtc.hidden ? 0 : ui.webrtc.position.width)
+                webrtcAdjust = (ui.webrtc.hidden ? 0 : ui.webrtc.position.width);
             if (game.webrtc.settings.client.dockPosition === 'bottom') {
                 webrtcVAdjust = 187;
             }
         }
 
-        const autoHideOrLock = !game.settings.get('minimal-ui', 'hotbar') === 'autohide' || ((game.webrtc.mode > 0 && game.webrtc.settings.client.dockPosition === 'bottom') ||
-            (game.modules.get('window-controls')?.active &&
-                game.settings.get('window-controls', 'organizedMinimize') === 'persistentBottom'));
+        // Corrigido erro lógico de parênteses no settings.get
+        const isAutoHide = game.settings.get('minimal-ui-personal', 'hotbar') === 'autohide';
+        const autoHideBlocked = (game.webrtc.mode > 0 && game.webrtc.settings.client.dockPosition === 'bottom') ||
+            (game.modules.get('window-controls')?.active && game.settings.get('window-controls', 'organizedMinimize') === 'persistentBottom');
 
-        if (game.modules.get('window-controls')?.active && autoHideOrLock)
-            if (game.settings.get('window-controls', 'organizedMinimize') === 'persistentBottom')
+        const autoHideOrLock = !isAutoHide || autoHideBlocked;
+
+        if (game.modules.get('window-controls')?.active && autoHideOrLock) {
+            const winMode = game.settings.get('window-controls', 'organizedMinimize');
+            if (winMode === 'persistentBottom')
                 rootStyle.setProperty('--hotbarypos', webrtcVAdjust + 40 + 'px');
-            else if (game.settings.get('window-controls', 'organizedMinimize') === 'persistentTop')
+            else if (winMode === 'persistentTop')
                 rootStyle.setProperty('--hotbarypos', webrtcVAdjust + 5 + 'px');
             else
                 rootStyle.setProperty('--hotbarypos', webrtcVAdjust + 'px');
+        }
 
-        switch (game.settings.get('minimal-ui', 'hotbarPosition')) {
+        const posMode = game.settings.get('minimal-ui-personal', 'hotbarPosition');
+        switch (posMode) {
             case 'default': {
                 rootStyle.setProperty('--hotbarxpos', (330 + webrtcAdjust)+'px');
                 break;
             }
             case 'extremeLeft': {
-                if (
-                  !(game.modules.get("custom-hotbar")?.active) &&
-                  availableWidth >= 1200
-                )
+                if (!(game.modules.get("custom-hotbar")?.active) && availableWidth >= 1200)
                     rootStyle.setProperty('--hotbarxpos', 8 + webrtcAdjust + 'px');
                 break;
             }
@@ -95,7 +98,7 @@ export default class MinimalUIHotbar {
                 break;
             }
             case 'manual': {
-                rootStyle.setProperty('--hotbarxpos', (parseInt(game.settings.get('minimal-ui', 'hotbarPixelPosition')) + webrtcAdjust) + 'px');
+                rootStyle.setProperty('--hotbarxpos', (parseInt(game.settings.get('minimal-ui-personal', 'hotbarPixelPosition')) + webrtcAdjust) + 'px');
                 break;
             }
         }
@@ -104,34 +107,34 @@ export default class MinimalUIHotbar {
 
     static configureHotbar() {
         const autoHideBlocked = (game.webrtc.mode > 0 && game.webrtc.settings.client.dockPosition === 'bottom') ||
-            (game.modules.get('window-controls')?.active &&
-            game.settings.get('window-controls', 'organizedMinimize') === 'persistentBottom');
-        if (game.settings.get('minimal-ui', 'hotbar') === 'autohide' && !autoHideBlocked) {
+            (game.modules.get('window-controls')?.active && game.settings.get('window-controls', 'organizedMinimize') === 'persistentBottom');
+        
+        if (game.settings.get('minimal-ui-personal', 'hotbar') === 'autohide' && !autoHideBlocked) {
             if (!(game.modules.get("custom-hotbar")?.active || game.modules.get('monks-hotbar-expansion')?.active)) {
                 rootStyle.setProperty('--hotbarypos', MinimalUIHotbar.cssHotbarHidden);
                 rootStyle.setProperty('--hotbarlh1', MinimalUIHotbar.cssHotbarLeftControlsLineHeight);
                 rootStyle.setProperty('--hotbarlh2', MinimalUIHotbar.cssHotbarRightControlsLineHeight);
+                
                 if (game.modules.get('dnd-ui')?.active) {
                     rootStyle.setProperty('--hotbarlh2', MinimalUIHotbar.cssHotbarRightControlsLineHeightDnDUi);
                 }
+                
                 rootStyle.setProperty('--hotbarmg', MinimalUIHotbar.cssHotbarControlsMargin);
                 rootStyle.setProperty('--hotbarhh', MinimalUIHotbar.cssHotbarControlsAutoHideHeight);
-                if (game.modules.get('window-controls')?.active &&
-                    game.settings.get('window-controls', 'organizedMinimize') === 'persistentTop')
-                    rootStyle.setProperty('--hotbarhv', MinimalUIHotbar.cssHotbarAutoHideHeightWinTop);
-                else
-                    rootStyle.setProperty('--hotbarhv', MinimalUIHotbar.cssHotbarAutoHideHeight);
+                
+                const winTop = game.modules.get('window-controls')?.active && game.settings.get('window-controls', 'organizedMinimize') === 'persistentTop';
+                rootStyle.setProperty('--hotbarhv', winTop ? MinimalUIHotbar.cssHotbarAutoHideHeightWinTop : MinimalUIHotbar.cssHotbarAutoHideHeight);
+                
                 rootStyle.setProperty('--hotbarshp', MinimalUIHotbar.cssHotbarAutoHideShadow);
-                $("#hotbar-directory-controls").append(MinimalUIHotbar.htmlHotbarLockButton);
-                $("#macro-directory").click(function () {
-                    MinimalUIHotbar.lockHotbar(false)
-                });
-                $("#bar-lock").click(function () {
-                    MinimalUIHotbar.lockHotbar(true)
-                });
-                $(".page-control").click(function () {
-                    MinimalUIHotbar.lockHotbar(false)
-                });
+
+                // Evita duplicação do botão de trava ao re-renderizar
+                if ($("#bar-lock").length === 0) {
+                    $("#hotbar-directory-controls").append(MinimalUIHotbar.htmlHotbarLockButton);
+                    $("#macro-directory").on('click', () => MinimalUIHotbar.lockHotbar(false));
+                    $("#bar-lock").on('click', () => MinimalUIHotbar.lockHotbar(true));
+                    $(".page-control").on('click', () => MinimalUIHotbar.lockHotbar(false));
+                }
+
                 if (MinimalUIHotbar.hotbarLocked) {
                     MinimalUIHotbar.lockHotbar(false);
                 }
@@ -141,8 +144,7 @@ export default class MinimalUIHotbar {
     }
 
     static initSettings() {
-
-        game.settings.register('minimal-ui', 'hotbar', {
+        game.settings.register('minimal-ui-personal', 'hotbar', {
             name: game.i18n.localize("MinimalUI.HotbarStyleName"),
             hint: game.i18n.localize("MinimalUI.HotbarStyleHint"),
             scope: 'world',
@@ -159,7 +161,7 @@ export default class MinimalUIHotbar {
             onChange: debouncedReload
         });
 
-        game.settings.register('minimal-ui', 'hotbarPosition', {
+        game.settings.register('minimal-ui-personal', 'hotbarPosition', {
             name: game.i18n.localize("MinimalUI.HotbarPositionName"),
             hint: game.i18n.localize("MinimalUI.HotbarPositionHint"),
             scope: 'world',
@@ -177,7 +179,7 @@ export default class MinimalUIHotbar {
             onChange: MinimalUIHotbar.positionHotbar
         });
 
-        game.settings.register('minimal-ui', 'hotbarPixelPosition', {
+        game.settings.register('minimal-ui-personal', 'hotbarPixelPosition', {
             name: game.i18n.localize("MinimalUI.HotbarPPositionName"),
             hint: game.i18n.localize("MinimalUI.HotbarPPositionHint"),
             scope: 'world',
@@ -189,12 +191,9 @@ export default class MinimalUIHotbar {
     }
 
     static initHooks() {
-        Hooks.on('ready', async function() {
-            MinimalUIHotbar.positionHotbar();
-        });
+        Hooks.on('ready', () => MinimalUIHotbar.positionHotbar());
 
-        // Needs to be .on so changing hotbar pages also applies
-        Hooks.on('renderHotbar', function () {
+        Hooks.on('renderHotbar', () => {
             MinimalUIHotbar.configureHotbar();
             if (game.modules.get('custom-hotbar')?.active) {
                 rootStyle.setProperty('--hotbarhv', MinimalUIHotbar.cssHotbarCustomHotbarCompatHover);
@@ -205,31 +204,27 @@ export default class MinimalUIHotbar {
             }
         });
 
-        Hooks.on('rtcSettingsChanged', function() {
-            MinimalUIHotbar.positionHotbar();
-        })
+        Hooks.on('rtcSettingsChanged', () => MinimalUIHotbar.positionHotbar());
 
-        Hooks.once('renderHotbar', function() {
-            const hotbarSetting = game.settings.get('minimal-ui', 'hotbar');
-            if (hotbarSetting === 'collapsed')
+        Hooks.once('renderHotbar', () => {
+            const hotbarSetting = game.settings.get('minimal-ui-personal', 'hotbar');
+            if (hotbarSetting === 'collapsed' && ui.hotbar)
                 ui.hotbar.collapse();
-            else if (hotbarSetting === 'onlygm') {
-                if (!game.user.isGM)
+            else if (['onlygm', 'hidden'].includes(hotbarSetting)) {
+                if (hotbarSetting === 'hidden' || !game.user.isGM)
                     rootStyle.setProperty('--hotbarvis', 'hidden');
-            } else if (hotbarSetting === 'hidden')
-                rootStyle.setProperty('--hotbarvis', 'hidden');
+            }
         });
 
-        Hooks.once('renderCustomHotbar', function() {
-            if (game.modules.get("custom-hotbar")?.active && game.settings.get('minimal-ui', 'hotbar') === 'collapsed') {
-                ui.customHotbar?.collapse()
+        Hooks.once('renderCustomHotbar', () => {
+            if (game.modules.get("custom-hotbar")?.active && game.settings.get('minimal-ui-personal', 'hotbar') === 'collapsed') {
+                ui.customHotbar?.collapse();
             }
-        })
+        });
 
-        Hooks.on('renderCompendium', function(compendium) {
+        Hooks.on('renderCompendium', (compendium) => {
             if (compendium.metadata.type === 'Macro')
-                MinimalUIHotbar.lockHotbar(false)
-        })
+                MinimalUIHotbar.lockHotbar(false);
+        });
     }
-
 }
