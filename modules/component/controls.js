@@ -16,9 +16,11 @@ export default class MinimalUIControls {
     static cssControlsSmallFontSize = '15px';
 
     static positionControls() {
-        const logoSettings = game.settings.get('minimal-ui', 'foundryLogoSize');
-        const navSettings = game.settings.get('minimal-ui', 'sceneNavigation');
-        const navSizeSettings = game.settings.get('minimal-ui', 'sceneNavigationSize');
+        // Importante: Todos os GETS devem usar o novo ID para não retornarem 'undefined'
+        const logoSettings = game.settings.get('minimal-ui-personal', 'foundryLogoSize');
+        const navSettings = game.settings.get('minimal-ui-personal', 'sceneNavigation');
+        const navSizeSettings = game.settings.get('minimal-ui-personal', 'sceneNavigationSize');
+        
         if (logoSettings === 'hidden' && navSettings === 'hidden') {
             rootStyle.setProperty('--controlstop', '-65px');
         } else if (navSizeSettings === 'big') {
@@ -31,16 +33,16 @@ export default class MinimalUIControls {
     }
 
     static showSubControls() {
-        if (game.settings.get('minimal-ui', 'controlsSubHide') === 'autohide') {
+        if (game.settings.get('minimal-ui-personal', 'controlsSubHide') === 'autohide') {
             rootStyle.setProperty('--controlssubop', '0%');
-        } else if (game.settings.get('minimal-ui', 'controlsSubHide') === 'autohide-plus') {
+        } else if (game.settings.get('minimal-ui-personal', 'controlsSubHide') === 'autohide-plus') {
             rootStyle.setProperty('--controlssubdisna', 'none');
             rootStyle.setProperty('--controlssubopna', '0%');
         }
     }
 
     static sizeControls() {
-        if (game.settings.get('minimal-ui', 'controlsSize') === 'small') {
+        if (game.settings.get('minimal-ui-personal', 'controlsSize') === 'small') {
             rootStyle.setProperty('--controlsw', MinimalUIControls.cssControlsSmallWidth);
             rootStyle.setProperty('--controlsh', MinimalUIControls.cssControlsSmallHeight);
             rootStyle.setProperty('--controlslh', MinimalUIControls.cssControlsSmallLineHeight);
@@ -54,7 +56,7 @@ export default class MinimalUIControls {
     }
 
     static initSettings() {
-        game.settings.register('minimal-ui', 'controlsSize', {
+        game.settings.register('minimal-ui-personal', 'controlsSize', {
             name: game.i18n.localize("MinimalUI.ControlsSizeName"),
             hint: game.i18n.localize("MinimalUI.ControlsSizeHint"),
             scope: 'world',
@@ -67,7 +69,7 @@ export default class MinimalUIControls {
             default: "small",
             onChange: MinimalUIControls.sizeControls
         });
-        game.settings.register('minimal-ui', 'controlsSubHide', {
+        game.settings.register('minimal-ui-personal', 'controlsSubHide', {
             name: game.i18n.localize("MinimalUI.ControlsSubHideName"),
             hint: game.i18n.localize("MinimalUI.ControlsSubHideHint"),
             scope: 'world',
@@ -82,42 +84,49 @@ export default class MinimalUIControls {
             onChange: debouncedReload
         });
     };
+
     static initHooks() {
-        Hooks.once('renderSceneControls', function () {
+        // Na v13, renderSceneControls é disparado sempre que os botões da esquerda mudam
+        Hooks.on('renderSceneControls', function (controls, html) {
             MinimalUIControls.positionControls();
             MinimalUIControls.showSubControls();
             MinimalUIControls.sizeControls();
-        });
-        Hooks.on('renderSceneControls', function() {
+
+            // Lógica de Hover/Click para sub-controles
             function controlsSubHoverRefresh() {
                 setTimeout(() => {
-                    const activeElement = $('#controls');
+                    const activeElement = html.find('#controls');
                     if (activeElement.length && !activeElement.is(':hover')) {
                         rootStyle.setProperty('--controlssubdisna', 'none');
                         MinimalUIControls.delayedProcessing = false;
                     } else controlsSubHoverRefresh();
                 }, 6000)
             }
+
             function controlsSubClickRefresh() {
                 setTimeout(() => {
-                    if (game.settings.get('minimal-ui', 'controlsSubHide') === 'autohide')
+                    if (game.settings.get('minimal-ui-personal', 'controlsSubHide') === 'autohide')
                         rootStyle.setProperty('--controlssubop', '0%');
-                    else if (game.settings.get('minimal-ui', 'controlsSubHide') === 'autohide-plus') {
+                    else if (game.settings.get('minimal-ui-personal', 'controlsSubHide') === 'autohide-plus') {
                         controlsSubHoverRefresh();
                     }
-                    rootStyle.setProperty('--opacitycontrols', game.settings.get("minimal-ui", "transparencyPercentage") + '%');
+                    // Adicionando fallback para evitar erro de leitura se a transparência não estiver definida
+                    const transparency = game.settings.get("minimal-ui-personal", "transparencyPercentage") || 100;
+                    rootStyle.setProperty('--opacitycontrols', transparency + '%');
                 }, 3000)
             }
-            if (['autohide', 'autohide-plus'].includes(game.settings.get('minimal-ui', 'controlsSubHide'))) {
-                $('#controls li').click(() => {
+
+            if (['autohide', 'autohide-plus'].includes(game.settings.get('minimal-ui-personal', 'controlsSubHide'))) {
+                html.find('li.control-tool').click(() => {
                     rootStyle.setProperty('--controlssubop', '100%');
                     rootStyle.setProperty('--controlssubopna', '100%');
                     rootStyle.setProperty('--opacitycontrols', '100%');
                     rootStyle.setProperty('--controlssubdisna', 'block');
                     controlsSubClickRefresh();
                 });
-                if (game.settings.get('minimal-ui', 'controlsSubHide') === 'autohide-plus') {
-                    $('#controls li').hover(() => {
+
+                if (game.settings.get('minimal-ui-personal', 'controlsSubHide') === 'autohide-plus') {
+                    html.find('li.control-tool').hover(() => {
                         if (MinimalUIControls.delayedProcessing) return;
                         MinimalUIControls.delayedProcessing = true;
                         rootStyle.setProperty('--controlssubdisna', 'block');
