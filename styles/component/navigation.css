@@ -1,5 +1,6 @@
 :root {
-    --navivis: hidden;
+    /* Alterado para visible para evitar que a navegação suma antes do JS carregar */
+    --navivis: visible;
     --navixpos: 110px;
     --navixmg: 75px;
     --navilh: 20px;
@@ -12,88 +13,89 @@
 }
 
 #ui-top.offset {
+    /* Ajuste para evitar que a UI superior "empurre" outros elementos na v13 */
     margin-left: var(--topleft);
+    pointer-events: none; /* Garante que o container transparente não bloqueie cliques */
+}
+
+#ui-top.offset > * {
+    pointer-events: all; /* Devolve os cliques para os elementos internos */
 }
 
 #navigation {
     padding-left: var(--navixpos);
     visibility: var(--navivis);
     opacity: var(--opacity);
-    transition: 0.5s ease-out 0.5s;
+    transition: opacity 0.5s ease;
     margin: 5px 0 0 0;
+    display: flex;
+    align-items: flex-start;
 }
 
 #navigation:hover {
-    opacity: 100%;
-    transition: 0.5s;
+    opacity: 100% !important;
 }
 
 #navigation .nav-item {
     line-height: var(--navilh);
     font-size: var(--navifs);
-    top: 5px;
+    top: 0; /* Resetado para alinhar melhor na v13 */
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--bordercolor);
+    box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
 }
 
 #navigation #nav-toggle {
     height: var(--navibuttonsize);
+    min-width: 32px;
     background: #292929bd;
     border: 1px solid var(--bordercolor);
-    border-bottom: 1px solid var(--bordercolor);
-    box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
+    box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
     left: var(--navileft);
     margin-right: var(--naviright);
-    top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #navigation #scene-list {
     margin-right: var(--navixmg);
+    display: flex;
+    gap: 4px;
 }
 
 #navigation #scene-list .scene ul.scene-players {
     top: var(--navilisttop);
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
 }
 
-#navigation #scene-list .scene.view, #navigation #scene-list .scene.context {
-    border: 1px solid var(--bordercolor);
-    border-bottom: 1px solid var(--bordercolor);
-    box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
-    top: 5px;
+#navigation #scene-list .scene.view, 
+#navigation #scene-list .scene.context {
+    border: 1px solid var(--bordercolor) !important;
+    box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor) !important;
+    background: rgba(0, 0, 0, 0.6);
 }
 
 /** COMPATIBILITY: Monks Scene Navigation */
 
 #navigation .monks-scene-navigation {
-    flex: 0 0 var(--navilh);
-    height: var(--navilh);
+    flex: 0 0 auto;
+    height: auto;
 }
 
 #navigation .monks-scene-navigation .scene-list > li.nav-item {
     height: var(--navilh);
+    margin-bottom: 2px;
 }
 
 #navigation .monks-scene-navigation .scene-list > li.nav-item a {
     line-height: var(--navilh);
     height: var(--navilh);
     font-size: var(--navifs);
-    padding: 0 4px;
+    padding: 0 8px;
 }
 
 #navigation .monks-scene-navigation .scene-list > li.nav-item ul.scene-players {
     top: var(--navilisttop);
 }
-
-#navigation .monks-scene-navigation .scene-list > li.nav-item.folder a {
-    padding-top: 0;
-    border-top: 1px;
-}
-
-#navigation .monks-scene-navigation .scene-list > li.nav-item.folder.expanded a {
-    height: calc(var(--navilh) + 2px);
-    margin-top: 4px;
-}
-
-#navigation .monks-scene-navigation .scene-list > li.nav-item.folder-header {
-    line-height: var(--navilh);
-}
-
-/** --------------- */
