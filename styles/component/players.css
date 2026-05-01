@@ -1,6 +1,7 @@
 :root {
-    --playervis: hidden;
-    --playerfsize: 0px;
+    /* Mudamos para visible e um tamanho de fonte inicial para evitar que suma no login */
+    --playervis: visible;
+    --playerfsize: 12px; 
     --playerfsizehv: 12px;
     --playerwidthhv: 150px;
     --playerslh: 20px;
@@ -15,43 +16,63 @@
     font-size: var(--playerfsize);
     visibility: var(--playervis);
     opacity: var(--opacity);
-    box-shadow: 0 var(--hotbarshp) var(--shadowstrength) 2px var(--shadowcolor);
+    /* Sombras e Bordas usando as variáveis do Theme */
+    box-shadow: 0 0 var(--shadowstrength) var(--shadowcolor);
     border: 1px solid var(--bordercolor);
+    background: rgba(0, 0, 0, 0.5); /* Fundo leve para garantir legibilidade */
+    transition: all 0.3s ease;
+    z-index: 60; /* Garante que fique acima do fundo mas abaixo de menus pop-out */
 }
 
 #players:hover {
-    opacity: 100%;
+    opacity: 100% !important;
 }
 
 #players ol li.player {
     padding: 1px 10px;
     line-height: var(--playerslh);
+    display: flex;
+    align-items: center;
+}
+
+/* Ajuste para o ponto de status (online/offline) na v13 */
+#players ol li.player .player-active {
+    margin-right: 8px;
 }
 
 #players h3 {
     margin: 1px;
-    padding-left: 2px;
+    padding-left: 5px;
+    border-bottom: 1px solid var(--bordercolor);
+    cursor: pointer; /* Indica que é clicável para o seu patch de alternar */
 }
 
 #players #context-menu {
     font-size: 14px;
+    z-index: 1000;
 }
 
 .raised-hand {
     font-size: 20px;
     position: fixed;
+    color: #ffcc00;
+    text-shadow: 0 0 5px black;
 }
 
 .pingLogger_pingSpan {
     display: var(--playerpingdisplay);
+    margin-left: 5px;
+    font-size: 0.9em;
 }
 
 .bennies-count {
     display: var(--playerbennies);
 }
 
+/* Compatibilidade com sistemas de pontos de destino/sorte */
 #destiny-tracker {
     opacity: var(--opacity);
+    transition: opacity 0.3s;
 }
 
 #destiny-tracker:hover {
