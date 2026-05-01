@@ -1,5 +1,5 @@
 import {debouncedReload, rootStyle} from '../util.js';
-import '../../styles/component/controls.css';
+
 
 export default class MinimalUIControls {
 
